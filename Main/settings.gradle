@@ -1,0 +1,4 @@
+rootProject.name = 'RESTopoly'
+
+include ":RESTopoly-Games"
+project(":RESTopoly-Games").projectDir = file("../Games")

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+docker build -t vsp1 . || exit -1
+docker stop vsp
+docker rm vsp
+docker run -p 8080 --name vsp -t vsp1 > logfile.log &2>logerror.log
+sleep 2s
+docker inspect vsp | grep IPAddress
