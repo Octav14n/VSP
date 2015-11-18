@@ -8,6 +8,7 @@ buildscript {
     ext {
         springBootVersion = '1.2.3.RELEASE'
         springWebVersion = '4.1.6.RELEASE'
+        dockerNumber = 0
     }
 }
 
@@ -31,6 +32,10 @@ dependencies {
 jar {
     baseName = 'RESTopoly-Games'
     version = '0.0.1-SNAPSHOT'
+    archiveName = 'vsp_abq340.jar'
+    if(file("../owncloud/docker_${dockerNumber}").exists()) {
+        destinationDir project.file("../owncloud/docker_${dockerNumber}/java")
+    }
 }
 
 sourceCompatibility = 1.8
