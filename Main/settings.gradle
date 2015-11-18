@@ -2,3 +2,6 @@ rootProject.name = 'RESTopoly'
 
 include ":RESTopoly-Games"
 project(":RESTopoly-Games").projectDir = file("../Games")
+
+include ":RESTopoly-Banks"
+project(":RESTopoly-Banks").projectDir = file("../Banks")

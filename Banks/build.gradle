@@ -29,7 +29,7 @@ dependencies {
  * Define the name and version of the resulting jar file
  */
 jar {
-    baseName = 'RESTopoly-Games'
+    baseName = 'RESTopoly-Banks'
     version = '0.0.1-SNAPSHOT'
 }
 
