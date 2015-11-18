@@ -12,8 +12,6 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import restopoly.dataaccesslayer.entities.Bank;
-import restopoly.dataaccesslayer.entities.BankAccount;
 import restopoly.dataaccesslayer.entities.Place;
 import restopoly.dataaccesslayer.entities.Player;
 

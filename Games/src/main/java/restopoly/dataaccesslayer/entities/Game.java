@@ -15,8 +15,6 @@ import java.util.List;
 public class Game {
     private int gameid;
     private @NotEmpty @NotNull List<GamePlayer> gamePlayers;
-    // every game has only one bank.
-    private @NotNull Bank bank;
 
     public Game(int gameid) {
         this.gameid = gameid;
@@ -73,13 +71,5 @@ public class Game {
         GamePlayer gamePlayer = gamePlayers.get(0);
         Player currentPlayer = gamePlayer.getPlayer();
         return currentPlayer;
-    }
-
-    public Bank getBank() {
-        return bank;
-    }
-
-    public void setBank(Bank bank) {
-        this.bank = bank;
     }
 }
