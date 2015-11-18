@@ -1,1 +1,3 @@
+before_script:
+ - cd Main
 language: java
