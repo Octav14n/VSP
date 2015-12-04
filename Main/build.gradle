@@ -12,6 +12,6 @@ repositories {
 }
 
 dependencies {
-    compile project(':RESTopoly-Games')
-    compile project(':RESTopoly-Banks')
+    //compile project(':RESTopoly-Games')
+    //compile project(':RESTopoly-Banks')
 }

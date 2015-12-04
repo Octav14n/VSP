@@ -6,13 +6,24 @@ version '1.0-SNAPSHOT'
  */
 buildscript {
     ext {
-        springBootVersion = '1.2.3.RELEASE'
-        springWebVersion = '4.1.6.RELEASE'
+        springBootVersion = '1.3.0.RELEASE'
+        springWebVersion = '4.2.3.RELEASE'
         dockerNumber = 0
+    }
+    /**
+     * Setup library repositories
+     */
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
 
 apply plugin: 'java'
+apply plugin: 'spring-boot'
 apply plugin: 'idea'
 
 dependencies {
@@ -20,6 +31,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
     compile("org.springframework:spring-web:${springWebVersion}")
+    compile project(":restopoly.Services")
 
     testCompile("org.springframework:spring-test:${springWebVersion}")
     testCompile("com.jayway.restassured:rest-assured:2.7.0")
@@ -34,7 +46,7 @@ jar {
     version = '0.0.1-SNAPSHOT'
     archiveName = 'vsp_abq340.jar'
     if(file("../owncloud/docker_${dockerNumber}").exists()) {
-        destinationDir project.file("../owncloud/docker_${dockerNumber}/java")
+        destinationDir project.file("../owncloud/docker_${dockerNumber}")
     }
 }
 

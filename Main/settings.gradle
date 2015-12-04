@@ -1,7 +1,16 @@
-rootProject.name = 'RESTopoly'
+rootProject.name = 'Main'
 
-include ":RESTopoly-Games"
-project(":RESTopoly-Games").projectDir = file("../Games")
+/**
+ * Services.
+ */
+include ":Games"
+project(":Games").projectDir = file("../Games")
 
-include ":RESTopoly-Banks"
-project(":RESTopoly-Banks").projectDir = file("../Banks")
+include ":Banks"
+project(":Banks").projectDir = file("../Banks")
+
+/**
+ * Util projects.
+ */
+include ":Services"
+project(":Services").projectDir = file("../Services")

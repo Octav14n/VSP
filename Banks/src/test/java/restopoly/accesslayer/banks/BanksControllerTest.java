@@ -16,7 +16,6 @@ import restopoly.Main;
 import restopoly.dataaccesslayer.entities.*;
 
 import static com.jayway.restassured.RestAssured.given;
-import static org.junit.Assert.*;
 
 /**
  * Created by octavian on 16.11.15.
