@@ -38,8 +38,8 @@ public class BanksControllerTest {
     @Test
     public void testAll() {
 
-        Player playerSimon = new Player("simon", "Simon der Grune", new Place("Wonderland"));
-        Player playerPatrick = new Player("patrick", "Patrick der Linke", new Place("Hyrule"));
+        Player playerSimon = new Player("simon", "Simon der Grune", "http://125.0.0.1");
+        Player playerPatrick = new Player("patrick", "Patrick der Linke", "http://1.0.0.125");
         Game game = new Game("0");
         BankAccount bankAccountSimon = new BankAccount(playerSimon, 0);
         BankAccount bankAccountPatrick = new BankAccount(playerPatrick,  42);

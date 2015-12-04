@@ -12,8 +12,12 @@ project(":Banks").projectDir = file("../Banks")
 include ":Players"
 project(":Players").projectDir = file("../Players")
 
+include ":Events"
+project(":Events").projectDir = file("../Events")
+
 /**
  * Util projects.
  */
 include ":Services"
 project(":Services").projectDir = file("../Services")
+
