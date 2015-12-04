@@ -15,6 +15,8 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import restopoly.dataaccesslayer.entities.Place;
 import restopoly.dataaccesslayer.entities.Player;
 
+import java.util.Date;
+
 import static com.jayway.restassured.RestAssured.given;
 
 /**
@@ -42,50 +44,23 @@ public class GamesControllerTest {
             .statusCode(HttpStatus.OK.value())
             .body("isEmpty()", Matchers.is(true));
 
-        // GET Players --> Empty Array
-        given().when()
-            .get("/players").then()
-            .statusCode(HttpStatus.OK.value())
-            .body("isEmpty()", Matchers.is(true));
-
         // GET Jail --> Empty Array
         given().when()
             .get("/jail").then()
             .statusCode(HttpStatus.OK.value())
             .body("", Matchers.hasSize(0));
 
-        Player player = new Player("simon", "Simon der Grune", new Place("Wonderland"));
-
-        // POST Players --> Player Object. // Creates a Player.
-        given().when()
-            .contentType(ContentType.URLENC)
-            .param("playerId", "simon")
-            .param("name", "Simon der Grune")
-            .param("place", "Wonderland")
-            .post("/players").then()
-            .statusCode(HttpStatus.CREATED.value())
-            .body("id", Matchers.equalTo(player.getId()))
-            .body("name", Matchers.equalTo(player.getName()))
-            .body("place.name", Matchers.equalTo(player.getPlace().getName()));
-
-        // GET Players --> Array with simon.
-        given().when()
-            .get("/players").then()
-            .statusCode(HttpStatus.OK.value())
-            .body("", Matchers.hasSize(1))
-            .body("id[0]", Matchers.equalTo(player.getId())) // "Feld[0]" entspricht dem Feld aus dem ersten Eintrag des Arrays.
-            .body("name[0]", Matchers.equalTo(player.getName()))
-            .body("place[0].name", Matchers.equalTo(player.getPlace().getName()));
+        Player player = new Player("simon", "Simon der Grune (um " + new Date().toString() + " Uhr)", "http://256.0.0.1/");
 
         // POST Games --> Object with game. // Creates a Game.
         String gameId =
-        given().when()
-            .post("/games").then()
-            .statusCode(HttpStatus.CREATED.value())
-            .body("players", Matchers.hasSize(0))
-            .extract().path("gameid");
+            given().when()
+                .post("/games").then()
+                .statusCode(HttpStatus.CREATED.value())
+                .body("players", Matchers.hasSize(0))
+                .extract().path("gameid");
 
-        // GET Games --> Array with one game.
+        // GET Games --> Array with one game and no players.
         given().when()
             .get("/games").then()
             .statusCode(HttpStatus.OK.value())
@@ -93,11 +68,25 @@ public class GamesControllerTest {
             .body("gameid[0]", Matchers.equalTo(gameId))
             .body("players[0]", Matchers.hasSize(0));
 
-        // PUT Game --> Void // Joins the Game.
+        // POST Players --> Player Object. // Joins the game.
         given().when()
-            .put("/games/" + gameId + "/players/simon").then()
+            .pathParam("gameId", gameId)
+            .pathParam("playerId", player.getId())
+            .queryParam("name", player.getName())
+            .queryParam("uri", player.getUri())
+            .put("/games/{gameId}/players/{playerId}").then()
+            .statusCode(Matchers.greaterThanOrEqualTo(200)) // Is it somewhere in the "OK" area.
+            .statusCode(Matchers.lessThan(300));
+
+        // GET Players --> Array with simon.
+        given().when()
+            .pathParam("gameId", gameId)
+            .get("/games/{gameId}/players").then()
             .statusCode(HttpStatus.OK.value())
-            .body(Matchers.isEmptyOrNullString());
+            .body("", Matchers.hasSize(1))
+            .body("id[0]", Matchers.equalTo(player.getId())) // "Feld[0]" entspricht dem Feld aus dem ersten Eintrag des Arrays.
+            .body("name[0]", Matchers.equalTo(player.getName()))
+            .body("uri[0]", Matchers.equalTo(player.getUri()));
 
         // GET Games --> Array with one game.
         given().when()
@@ -109,33 +98,40 @@ public class GamesControllerTest {
 
         // GET Ready
         given().when()
-            .get("/games/" + gameId + "/players/simon/ready").then()
+            .pathParam("gameId", gameId)
+            .pathParam("playerId", player.getId())
+            .get("/games/{gameId}/players/{playerId}/ready").then()
             .statusCode(HttpStatus.OK.value())
             .body(Matchers.equalTo("false"));
 
         // GET CurrentPlayer --> HttpStatus 404
         given().when()
-            .get("/games/" + gameId + "/players/current").then()
+            .pathParam("gameId", gameId)
+            .get("/games/{gameId}/players/current").then()
             .statusCode(HttpStatus.NOT_FOUND.value());
 
         // PUT Ready --> Void // Setzt den Spieler ready.
         given().when()
-            .put("/games/" + gameId + "/players/simon/ready").then()
+            .pathParam("gameId", gameId)
+            .pathParam("playerId", player.getId())
+            .put("/games/{gameId}/players/{playerId}/ready").then()
             .statusCode(HttpStatus.OK.value())
             .body(Matchers.isEmptyOrNullString());
 
         // GET Ready
         given().when()
-            .get("/games/" + gameId + "/players/simon/ready").then()
+            .pathParam("gameId", gameId)
+            .pathParam("playerId", player.getId())
+            .get("/games/{gameId}/players/{playerId}/ready").then()
             .statusCode(HttpStatus.OK.value())
             .body(Matchers.equalTo("true"));
 
         // GET CurrentPlayer --> Player simon.
         given().when()
-            .get("/games/" + gameId + "/players/current").then()
+            .pathParam("gameId", gameId)
+            .get("/games/{gameId}/players/current").then()
             .statusCode(HttpStatus.OK.value())
             .body("id", Matchers.equalTo(player.getId()))
-            .body("name", Matchers.equalTo(player.getName()))
-            .body("place.name", Matchers.equalTo(player.getPlace().getName()));
+            .body("name", Matchers.equalTo(player.getName()));
     }
 }

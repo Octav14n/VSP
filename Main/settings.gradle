@@ -9,6 +9,9 @@ project(":Games").projectDir = file("../Games")
 include ":Banks"
 project(":Banks").projectDir = file("../Banks")
 
+include ":Players"
+project(":Players").projectDir = file("../Players")
+
 /**
  * Util projects.
  */

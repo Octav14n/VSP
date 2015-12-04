@@ -33,6 +33,15 @@ public class Game {
         return players;
     }
 
+    public Player getPlayer(String playerId) {
+        for (Player player : this.players) {
+            if (player.getId().equals(playerId)) {
+                return player;
+            }
+        }
+        return null;
+    }
+
     public void addPlayer(Player player) {
         players.add(player);
     }

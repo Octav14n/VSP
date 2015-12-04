@@ -8,13 +8,13 @@ import javax.validation.constraints.NotNull;
 public class Player {
     private @NotNull String id;
     private @NotNull String name;
-    private @NotNull String uri;
+    private @NotNull Place place;
     private boolean isReady;
 
-    public Player(String id, String name, String uri) {
+    public Player(String id, String name, Place place) {
         this.id = id;
         this.name = name;
-        this.uri = uri;
+        this.place = place;
     }
 
     // Needed by Spring.
@@ -28,8 +28,8 @@ public class Player {
         return id;
     }
 
-    public String getUri() {
-        return uri;
+    public Place getPlace() {
+        return place;
     }
 
     public boolean isReady() {
@@ -50,13 +50,16 @@ public class Player {
 
         if (id != null ? !id.equals(player.id) : player.id != null)
             return false;
-        return !(uri != null ? !uri.equals(player.uri) : player.uri != null);
+        if (name != null ? !name.equals(player.name) : player.name != null)
+            return false;
+        return !(place != null ? !place.equals(player.place) : player.place != null);
 
     }
 
     @Override public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (uri != null ? uri.hashCode() : 0);
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (place != null ? place.hashCode() : 0);
         return result;
     }
 }
