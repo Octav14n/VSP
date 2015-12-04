@@ -9,8 +9,6 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.X509Certificate;
 
-;
-
 /**
  * Created by octavian on 04.12.15.
  */

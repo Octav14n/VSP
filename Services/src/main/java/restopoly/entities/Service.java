@@ -1,16 +1,12 @@
 package restopoly.entities;
 
-import com.sun.istack.internal.NotNull;
-
 /**
  * Created by octavian on 04.12.15.
  */
 public class Service {
     String name;
     String description;
-    @NotNull
     String service;
-    @NotNull
     String uri;
     String status;
     String _uri;

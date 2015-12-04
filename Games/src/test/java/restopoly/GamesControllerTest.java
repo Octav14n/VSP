@@ -78,23 +78,24 @@ public class GamesControllerTest {
             .body("place[0].name", Matchers.equalTo(player.getPlace().getName()));
 
         // POST Games --> Object with game. // Creates a Game.
+        String gameId =
         given().when()
             .post("/games").then()
             .statusCode(HttpStatus.CREATED.value())
-            .body("gameid", Matchers.equalTo(0))
-            .body("players", Matchers.hasSize(0));
+            .body("players", Matchers.hasSize(0))
+            .extract().path("gameid");
 
         // GET Games --> Array with one game.
         given().when()
             .get("/games").then()
             .statusCode(HttpStatus.OK.value())
             .body("", Matchers.hasSize(1))
-            .body("gameid[0]", Matchers.equalTo(0))
+            .body("gameid[0]", Matchers.equalTo(gameId))
             .body("players[0]", Matchers.hasSize(0));
 
         // PUT Game --> Void // Joins the Game.
         given().when()
-            .put("/games/0/players/simon").then()
+            .put("/games/" + gameId + "/players/simon").then()
             .statusCode(HttpStatus.OK.value())
             .body(Matchers.isEmptyOrNullString());
 
@@ -103,35 +104,35 @@ public class GamesControllerTest {
             .get("/games").then()
             .statusCode(HttpStatus.OK.value())
             .body("", Matchers.hasSize(1))
-            .body("gameid[0]", Matchers.equalTo(0))
+            .body("gameid[0]", Matchers.equalTo(gameId))
             .body("players[0][0].id", Matchers.equalTo(player.getId()));
 
         // GET Ready
         given().when()
-            .get("/games/0/players/simon/ready").then()
+            .get("/games/" + gameId + "/players/simon/ready").then()
             .statusCode(HttpStatus.OK.value())
             .body(Matchers.equalTo("false"));
 
         // GET CurrentPlayer --> HttpStatus 404
         given().when()
-            .get("/games/0/players/current").then()
+            .get("/games/" + gameId + "/players/current").then()
             .statusCode(HttpStatus.NOT_FOUND.value());
 
         // PUT Ready --> Void // Setzt den Spieler ready.
         given().when()
-            .put("/games/0/players/simon/ready").then()
+            .put("/games/" + gameId + "/players/simon/ready").then()
             .statusCode(HttpStatus.OK.value())
             .body(Matchers.isEmptyOrNullString());
 
         // GET Ready
         given().when()
-            .get("/games/0/players/simon/ready").then()
+            .get("/games/" + gameId + "/players/simon/ready").then()
             .statusCode(HttpStatus.OK.value())
             .body(Matchers.equalTo("true"));
 
         // GET CurrentPlayer --> Player simon.
         given().when()
-            .get("/games/0/players/current").then()
+            .get("/games/" + gameId + "/players/current").then()
             .statusCode(HttpStatus.OK.value())
             .body("id", Matchers.equalTo(player.getId()))
             .body("name", Matchers.equalTo(player.getName()))

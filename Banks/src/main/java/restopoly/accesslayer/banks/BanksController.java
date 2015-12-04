@@ -86,7 +86,7 @@ import java.util.List;
             // without giving it to "to".
             // Also: Mobbing Mary Poppins.
             if ("Supercalifragilisticexpialigetisch".equals(reason))
-                throw new RuntimeException("Alles ist doof, ich will nicht mehr!");
+                throw new RuntimeException("Supercalifragilisticexpialigetisch ist ein verbotener Ueberweisungszweck!");
 
             events.addAll(createBankTransferTo(gameid, to, amount, reason));
         } catch (Throwable e) {

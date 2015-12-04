@@ -13,34 +13,34 @@ import java.util.List;
  */
 @JsonIgnoreProperties("currentPlayer")
 public class Game {
-    private int gameid;
-    private @NotEmpty @NotNull List<GamePlayer> gamePlayers;
+    private String gameid;
+    private @NotEmpty @NotNull List<Player> players;
 
-    public Game(int gameid) {
+    public Game(String gameid) {
         this.gameid = gameid;
-        gamePlayers = new ArrayList<>();
+        players = new ArrayList<>();
     }
 
-    public int getGameid() {
+    public String getGameid() {
         return gameid;
     }
 
     public List<Player> getPlayers() {
         List<Player> players = new ArrayList<>();
-        for (GamePlayer gamePlayer : gamePlayers) {
-            players.add(gamePlayer.getPlayer());
+        for (Player player : this.players) {
+            players.add(player);
         }
         return players;
     }
 
     public void addPlayer(Player player) {
-        gamePlayers.add(new GamePlayer(player, this.getGameid()));
+        players.add(player);
     }
 
     public void setReady(Player player, boolean ready) {
-        for (GamePlayer gamePlayer : gamePlayers) {
-            if (gamePlayer.getPlayer().equals(player)) {
-                gamePlayer.setReady(ready);
+        for (Player gamePlayer : players) {
+            if (gamePlayer.equals(gamePlayer)) {
+                gamePlayer.setIsReady(ready);
                 return;
             }
         }
@@ -48,8 +48,8 @@ public class Game {
 
     public boolean getReady(Player player) {
         boolean isReady = false;
-        for (GamePlayer gamePlayer : gamePlayers) {
-            if (gamePlayer.getPlayer().equals(player)) {
+        for (Player gamePlayer : players) {
+            if (gamePlayer.equals(player)) {
                 if (gamePlayer.isReady() == true) {
                     isReady = true;
                 }
@@ -59,17 +59,16 @@ public class Game {
     }
 
     public Player getCurrentPlayer() {
-        if (gamePlayers.isEmpty()) {
+        if (players.isEmpty()) {
             return null;
         }
         // Check that all players are ready.
-        for (GamePlayer gamePlayer : gamePlayers) {
+        for (Player gamePlayer : players) {
             if (!gamePlayer.isReady()) {
                 return null;
             }
         }
-        GamePlayer gamePlayer = gamePlayers.get(0);
-        Player currentPlayer = gamePlayer.getPlayer();
+        Player currentPlayer = players.get(0);
         return currentPlayer;
     }
 }

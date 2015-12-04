@@ -7,10 +7,10 @@ import javax.validation.constraints.NotNull;
  */
 public class BankAccount {
 
-    private @NotNull GamePlayer player;
+    private @NotNull Player player;
     private int saldo;
 
-    public BankAccount(GamePlayer player, int saldo) {
+    public BankAccount(Player player, int saldo) {
         this.player = player;
         this.saldo = saldo;
     }
@@ -18,7 +18,7 @@ public class BankAccount {
     // Needed for Spring.
     private BankAccount() {}
 
-    public GamePlayer getPlayer() {
+    public Player getPlayer() {
         return player;
     }
 

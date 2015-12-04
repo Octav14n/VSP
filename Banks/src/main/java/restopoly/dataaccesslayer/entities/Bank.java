@@ -21,7 +21,7 @@ public class Bank {
 
     public BankAccount getBankAccount(String playerId) {
         for (BankAccount bankAccount : bankAccounts) {
-            if (playerId.equals(bankAccount.getPlayer().getPlayer().getId())) {
+            if (playerId.equals(bankAccount.getPlayer().getId())) {
                 return bankAccount;
             }
         }
@@ -33,6 +33,6 @@ public class Bank {
     }
 
     public boolean isBankAccountExists(BankAccount bankAccount) {
-        return getBankAccount(bankAccount.getPlayer().getPlayer().getId()) != null;
+        return getBankAccount(bankAccount.getPlayer().getId()) != null;
     }
 }

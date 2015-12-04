@@ -31,7 +31,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
     compile("org.springframework:spring-web:${springWebVersion}")
-    compile project(":restopoly.Services")
+    compile project(":Services")
 
     testCompile("org.springframework:spring-test:${springWebVersion}")
     testCompile("com.jayway.restassured:rest-assured:2.7.0")

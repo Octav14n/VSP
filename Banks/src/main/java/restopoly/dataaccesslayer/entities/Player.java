@@ -9,6 +9,7 @@ public class Player {
     private @NotNull String id;
     private @NotNull String name;
     private @NotNull Place place;
+    private boolean isReady;
 
     public Player(String id, String name, Place place) {
         this.id = id;
@@ -29,6 +30,14 @@ public class Player {
 
     public Place getPlace() {
         return place;
+    }
+
+    public boolean isReady() {
+        return isReady;
+    }
+
+    public void setIsReady(boolean isReady) {
+        this.isReady = isReady;
     }
 
     @Override public boolean equals(Object o) {

@@ -8,14 +8,14 @@ public class Event {
     String name; // human readable name for this event
     String reason; // a description why this event occured
     String resource; // the uri of the resource related to this event
-    GamePlayer gamePlayer; // The player issued this event
+    Player player; // The player issued this event
 
-    public Event(String type, String name, String reason, String resource, GamePlayer gamePlayer) {
+    public Event(String type, String name, String reason, String resource, Player player) {
         this.type = type;
         this.name = name;
         this.reason = reason;
         this.resource = resource;
-        this.gamePlayer = gamePlayer;
+        this.player = player;
     }
 
     public String getType() {
@@ -34,7 +34,7 @@ public class Event {
         return resource;
     }
 
-    public GamePlayer getGamePlayer() {
-        return gamePlayer;
+    public Player getPlayer() {
+        return player;
     }
 }

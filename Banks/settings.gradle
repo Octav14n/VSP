@@ -1,4 +1,3 @@
-rootProject.projectDir = file('../Main')
 
-include ":restopoly.Services"
-project(":restopoly.Services").projectDir = file("../restopoly.Services")
+include ":Services"
+project(":Services").projectDir = file("../Services")

@@ -4,12 +4,12 @@ import restopoly.dataaccesslayer.entities.Game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by octavian on 27.10.15.
  */
 public class GameList {
-    private int nextGameId = 0;
     private List<Game> games;
 
     public GameList() {
@@ -17,15 +17,14 @@ public class GameList {
     }
 
     public Game addGame() {
-        Game game = new Game(nextGameId);
-        nextGameId++;
+        Game game = new Game(UUID.randomUUID().toString());
         games.add(game);
         return game;
     }
 
-    public Game getGame(int gameId) {
+    public Game getGame(String gameId) {
         for (Game game : games) {
-            if (game.getGameid() == gameId) {
+            if (game.getGameid().equals(gameId)) {
                 return game;
             }
         }
