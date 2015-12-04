@@ -23,14 +23,14 @@ public class PlayerController {
 
     @RequestMapping(value = "/players", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public Player addPlayer(String playerId, String name, Place place) {
+    public Player addPlayer(String playerId, String name, String uri) {
         if (playerId == null || playerId.isEmpty())
             throw new ParameterIsInvalidException("playerId");
         if (name == null || name.isEmpty())
             throw new ParameterIsInvalidException("name");
-        if (place == null)
-            throw new ParameterIsInvalidException("place");
-        return playerList.addPlayer(playerId, name, place);
+        if (uri == null || uri.isEmpty())
+            throw new ParameterIsInvalidException("uri");
+        return playerList.addPlayer(playerId, name, uri);
     }
 
     @RequestMapping(value = "/players/{playerId}", method = RequestMethod.GET)

@@ -34,7 +34,7 @@ public class EventsController {
         return "/events/" + (events.indexOf(event));
     }
 
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(value = "/events/subscriptions", method = RequestMethod.POST)
     public void subscribe(Subscription subscription) {
         subscriptions.add(subscription);
     }

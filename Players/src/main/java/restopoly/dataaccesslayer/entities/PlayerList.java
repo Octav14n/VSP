@@ -26,8 +26,8 @@ public class PlayerList {
         return null;
     }
 
-    public Player addPlayer(String playerId, String name, Place place) {
-        Player player = new Player(playerId, name, place);
+    public Player addPlayer(String playerId, String name, String uri) {
+        Player player = new Player(playerId, name, uri);
         players.add(player);
         return player;
     }
