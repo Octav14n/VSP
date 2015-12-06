@@ -1,40 +1,51 @@
 package restopoly.accesslayer.player;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
-import restopoly.accesslayer.exceptions.ParameterIsInvalidException;
-import restopoly.dataaccesslayer.entities.Place;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.socket.config.annotation.AbstractWebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import restopoly.dataaccesslayer.entities.Event;
 import restopoly.dataaccesslayer.entities.Player;
-import restopoly.dataaccesslayer.entities.PlayerList;
-
-import java.util.List;
 
 /**
  * Created by octavian on 27.10.15.
  */
 @RestController
-public class PlayerController {
-    private PlayerList playerList = new PlayerList();
+@EnableWebSocketMessageBroker
+public class PlayerController extends AbstractWebSocketMessageBrokerConfigurer {
+    @Autowired
+    private SimpMessagingTemplate template;
 
-    @RequestMapping(value = "/players", method = RequestMethod.GET)
-    public List<Player> getPlayers() {
-        return playerList.getPlayers();
+    private Player player;
+
+    @RequestMapping(value = "/player", method = RequestMethod.GET)
+    public Player getPlayer() {
+        return player;
     }
 
-    @RequestMapping(value = "/players", method = RequestMethod.POST)
-    @ResponseStatus(HttpStatus.CREATED)
-    public Player addPlayer(String playerId, String name, String uri) {
-        if (playerId == null || playerId.isEmpty())
-            throw new ParameterIsInvalidException("playerId");
-        if (name == null || name.isEmpty())
-            throw new ParameterIsInvalidException("name");
-        if (uri == null || uri.isEmpty())
-            throw new ParameterIsInvalidException("uri");
-        return playerList.addPlayer(playerId, name, uri);
+    @RequestMapping(value = "/player/turn", method = RequestMethod.POST)
+    public void informPlayerOfTurn() {
+        template.convertAndSend("/intern/turn", "");
     }
 
-    @RequestMapping(value = "/players/{playerId}", method = RequestMethod.GET)
-    public Player getPlayer(@PathVariable String playerId) {
-        return playerList.getPlayer(playerId);
+    @RequestMapping(value = "/player/event", method = RequestMethod.POST)
+    public void informPlayerOfEvent(@RequestBody Event event) {
+        template.convertAndSend("/intern/event", event);
+    }
+
+    @Override public void configureMessageBroker (MessageBrokerRegistry registry) {
+        registry.enableSimpleBroker("/intern");
+    }
+
+    @Override public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/socket").withSockJS();
     }
 }

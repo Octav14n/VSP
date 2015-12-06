@@ -31,6 +31,8 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
     compile("org.springframework:spring-web:${springWebVersion}")
+    compile("org.springframework.boot:spring-boot-starter-websocket:${springBootVersion}")
+    compile("org.springframework:spring-messaging:${springWebVersion}")
     compile project(":Services")
 
     testCompile("org.springframework:spring-test:${springWebVersion}")

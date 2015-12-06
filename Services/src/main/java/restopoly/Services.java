@@ -7,6 +7,8 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.cert.X509Certificate;
 
 /**
@@ -59,5 +61,16 @@ public class Services {
         Service haha = restTemplate.postForObject(uri, service, Service.class);
         System.out.println("Output: " + haha);
         return 0;
+    }
+
+    /**
+     * Returns the URI of the Service running in this container.
+     */
+    public static String uri() {
+        try {
+            return String.format("http://%s:4567/", InetAddress.getLocalHost().getHostAddress());
+        } catch (UnknownHostException e) {
+            return "http://0.0.0.0:4567/";
+        }
     }
 }

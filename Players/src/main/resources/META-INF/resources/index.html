@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>RESTopoly Player - Grün (Neon)</title>
+        <script src="jquery2.js" type="application/javascript"></script>
+        <script src="sockjs-1.0.3.js" type="application/javascript"></script>
+        <script src="stomp.js" type="application/javascript"></script>
+        <script type="application/javascript">
+            <!--
+            function log(msg) {
+                console.log(msg);
+                $('body').text(
+                        new Date().toISOString() + " - " +
+                        arguments.callee.caller.name + ": " +
+                        msg);
+            }
+            $(window).load(function () {
+                var socket = Stomp.over(new SockJS('/socket'));
+                socket.connect({}, function(frame) {
+                    console.log('connect');
+                    console.log(frame);
+                    socket.subscribe('/intern/turn', function (evt) {
+                        log(evt)
+                    });
+                    socket.subscribe('/intern/event', function (evt) {
+                        log(evt);
+                    });
+                });
+            });
+            //-->
+        </script>
+    </head>
+    <body>
+
+    </body>
+</html>
