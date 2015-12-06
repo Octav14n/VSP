@@ -26,9 +26,12 @@ public class PlayerList {
         return null;
     }
 
-    public Player addPlayer(String playerId, String name, String uri) {
-        Player player = new Player(playerId, name, uri);
+    /**
+     * This method will add the new player to the playerlist of the game.
+     *
+     * @param player The player, which will be added to the playerlist.
+     */
+    public void addPlayer(Player player) {
         players.add(player);
-        return player;
     }
 }

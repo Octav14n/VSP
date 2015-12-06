@@ -20,22 +20,47 @@ public class Player {
     // Needed by Spring.
     private Player() {}
 
+    /**
+     * This method will get the name of the Player.
+     *
+     * @return Returns the name as a String of this player.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * This method will get the id of the player.
+     *
+     * @return Returns the id for this player.
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * This method will get the spezified URI for the player.
+     *
+     * @return Returns a String, which is the URI for the player.
+     */
     public String getUri() {
         return uri;
     }
 
+    /**
+     * This method will get the status from a player.
+     *
+     * @return Returns true or false. If the player is at status ready the return value is true. Else it will be false.
+     */
     public boolean isReady() {
         return isReady;
     }
 
+    /**
+     * This method will set the status for a player.
+     *
+     * @param isReady isReady is given to set the ready status for this player to ready or to false.
+     */
     public void setIsReady(boolean isReady) {
         this.isReady = isReady;
     }

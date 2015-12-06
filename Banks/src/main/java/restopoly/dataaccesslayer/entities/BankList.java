@@ -13,13 +13,23 @@ public class BankList {
         bankMap = new HashMap<>();
     }
 
+    /**
+     * This method returns the bank for the given gameid.
+     *
+     * @param gameid This gameid is given to get the bank.
+     * @return       Returns a bank which is connected with the game of this ID.
+     */
     public Bank getBank(int gameid) {
         return bankMap.get(gameid);
     }
 
-    public Bank createBank(int gameid) {
-        Bank bank = new Bank();
+    /**
+     * This method will add a new bank to the list with all existing banks.
+     *
+     * @param bank The incoming bank which should added to the list.
+     * @param gameid The gameid identifies to which game the bank is connected.
+     */
+    public void addBank(Bank bank, int gameid) {
         bankMap.put(gameid, bank);
-        return bank;
     }
 }

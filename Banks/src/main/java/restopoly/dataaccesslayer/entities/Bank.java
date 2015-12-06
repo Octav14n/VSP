@@ -15,24 +15,21 @@ public class Bank {
         this.bankAccounts = new ArrayList<>();
     }
 
+    /**
+     * This method will get all bankAccounts which are registered at the bank.
+     *
+     * @return Returns a list with all bankAccounts of this bank.
+     */
     public List<BankAccount> getBankAccounts() {
         return bankAccounts;
     }
 
-    public BankAccount getBankAccount(String playerId) {
-        for (BankAccount bankAccount : bankAccounts) {
-            if (playerId.equals(bankAccount.getPlayer().getId())) {
-                return bankAccount;
-            }
-        }
-        return null;
-    }
-
+    /**
+     * This method will register a new bankAccount at this bank.
+     *
+     * @param bankAccount This bankAccount will be registered at the bank.
+     */
     public void addBankAccount(BankAccount bankAccount) {
         bankAccounts.add(bankAccount);
-    }
-
-    public boolean isBankAccountExists(BankAccount bankAccount) {
-        return getBankAccount(bankAccount.getPlayer().getId()) != null;
     }
 }

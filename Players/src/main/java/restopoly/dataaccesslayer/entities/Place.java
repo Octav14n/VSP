@@ -15,6 +15,11 @@ public class Place {
     // Needed by Spring.
     private Place() {}
 
+    /**
+     * This method will get the name of a place.
+     *
+     * @return Returns a string, which will be the name of the place.
+     */
     public String getName() {
         return name;
     }
