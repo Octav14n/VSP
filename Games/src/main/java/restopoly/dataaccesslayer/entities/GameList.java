@@ -1,6 +1,5 @@
 package restopoly.dataaccesslayer.entities;
 
-import restopoly.dataaccesslayer.entities.Game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +30,11 @@ public class GameList {
         return null;
     }
 
+    /**
+     * This mehtod gets every game which can be joined.
+     *
+     * @return Returns the list with all games.
+     */
     public List<Game> getGames() {
         return games;
     }

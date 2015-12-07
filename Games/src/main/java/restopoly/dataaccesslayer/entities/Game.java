@@ -1,6 +1,5 @@
 package restopoly.dataaccesslayer.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.validator.constraints.NotEmpty;
 
@@ -13,71 +12,98 @@ import java.util.List;
  */
 @JsonIgnoreProperties("currentPlayer")
 public class Game {
+
     private String gameid;
     private @NotEmpty @NotNull List<Player> players;
 
     public Game(String gameid) {
         this.gameid = gameid;
-        players = new ArrayList<>();
+        this.players = new ArrayList<>();
     }
 
-    public String getGameid() {
+  /**
+   * This method will get the gameid for a game.
+   *
+   * @return Returns the gameid as a String (UID).
+   */
+  public String getGameid() {
         return gameid;
     }
 
+    /**
+     * This method will get all players, which have join the game.
+     *
+     * @return Returns a list with all players of the game.
+     */
     public List<Player> getPlayers() {
-        List<Player> players = new ArrayList<>();
-        for (Player player : this.players) {
-            players.add(player);
-        }
         return players;
     }
 
-    public Player getPlayer(String playerId) {
-        for (Player player : this.players) {
-            if (player.getId().equals(playerId)) {
-                return player;
-            }
-        }
-        return null;
-    }
-
+    /**
+     * This method will add a new player into the players list.
+     *
+     * @param player This player will be added to the playerlist.
+     */
     public void addPlayer(Player player) {
         players.add(player);
     }
 
+    /**
+     * This method will set the ready flag for the player at the game.
+     *
+     * @param player This is the player for which the ready flag should be set.
+     * @param ready  This parameter could be true or false for setting the ready flag.
+     */
     public void setReady(Player player, boolean ready) {
-        for (Player gamePlayer : players) {
-            if (gamePlayer.equals(gamePlayer)) {
-                gamePlayer.setIsReady(ready);
-                return;
-            }
-        }
+        player.setIsReady(ready);
     }
 
+    /**
+     * This method gets the ready flag for the given player.
+     * This player is from the List of players at this game.
+     * The player was determined at the method in gamesServiceBusinessLogic.
+     *
+     * @param player The player for which the ready status should be asked.
+     * @return       Returns a boolean which is true if the player is ready or false if he is not ready.
+     */
     public boolean getReady(Player player) {
-        boolean isReady = false;
-        for (Player gamePlayer : players) {
-            if (gamePlayer.equals(player)) {
-                if (gamePlayer.isReady() == true) {
-                    isReady = true;
-                }
-            }
-        }
-        return isReady;
+        return player.isReady();
     }
 
+    /**
+     * This method will get the current player for the game.
+     *
+     * @return Returns the player which will make the next turn.
+     */
     public Player getCurrentPlayer() {
-        if (players.isEmpty()) {
-            return null;
-        }
-        // Check that all players are ready.
-        for (Player gamePlayer : players) {
-            if (!gamePlayer.isReady()) {
-                return null;
-            }
-        }
         Player currentPlayer = players.get(0);
         return currentPlayer;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+
+        Game game = (Game) object;
+
+        if (gameid != null ? !gameid.equals(game.gameid) : game.gameid != null) {
+            return false;
+        }
+
+        return !(players != null ? !players.equals(game.players) : game.players != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = gameid != null ? gameid.hashCode() : 0;
+        result = 31 * result + (players != null ? players.hashCode() : 0);
+        return result;
     }
 }

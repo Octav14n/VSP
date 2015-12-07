@@ -7,6 +7,7 @@ import restopoly.dataaccesslayer.entities.Jail;
 import restopoly.dataaccesslayer.entities.Player;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by octavian on 13.10.15.
@@ -21,7 +22,7 @@ public class JailController {
     }
 
     @RequestMapping(value = "/jail", method = RequestMethod.GET)
-    public ArrayList<Player> showInmates() {
+    public List<Player> showInmates() {
         return jail.showInmates();
     }
 }

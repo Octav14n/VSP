@@ -40,13 +40,14 @@ public class Player {
         this.isReady = isReady;
     }
 
-    @Override public boolean equals(Object o) {
-        if (this == o)
+    @Override
+    public boolean equals(Object object) {
+        if (this == object)
             return true;
-        if (o == null || getClass() != o.getClass())
+        if (object == null || getClass() != object.getClass())
             return false;
 
-        Player player = (Player) o;
+        Player player = (Player) object;
 
         if (id != null ? !id.equals(player.id) : player.id != null)
             return false;

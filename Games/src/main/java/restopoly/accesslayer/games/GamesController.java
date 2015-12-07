@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import restopoly.accesslayer.exceptions.GameNotFoundException;
 import restopoly.accesslayer.exceptions.PlayerNotFoundException;
+import restopoly.businesslogiclayer.GamesServiceBusinessLogic;
 import restopoly.dataaccesslayer.entities.*;
 
 import java.util.List;
@@ -13,10 +14,10 @@ import java.util.List;
 @RestController()
 public class GamesController {
     private RestTemplate restTemplate = new RestTemplate();
+    private GamesServiceBusinessLogic gamesServiceBusinessLogic = new GamesServiceBusinessLogic();
     private String boardUri = "https://vs-docker.informatik.haw-hamburg.de/ports/18193/boards/";
 
     private GameList gameList = new GameList();
-    //private PlayerList playerList = new PlayerList();
 
     @RequestMapping(value = "/games", method = RequestMethod.GET)
     public List<Game> getGames() {
@@ -37,8 +38,9 @@ public class GamesController {
     @RequestMapping(value = "/games/{gameid}/players", method = RequestMethod.GET)
     public List<Player> joinGame(@PathVariable String gameid) {
         Game game = gameList.getGame(gameid);
-        if (game == null)
+        if (game == null) {
             throw new GameNotFoundException();
+        }
 
         return game.getPlayers();
     }
@@ -46,8 +48,9 @@ public class GamesController {
     @RequestMapping(value = "/games/{gameid}/players/{playerid}", method = RequestMethod.PUT)
     public void joinGame(@PathVariable String gameid, @PathVariable String playerid, @RequestParam String name, @RequestParam String uri) {
         Game game = gameList.getGame(gameid);
-        if (game == null)
+        if (game == null) {
             throw new GameNotFoundException();
+        }
 
         Player player = new Player(playerid, name, uri);
 
@@ -60,25 +63,35 @@ public class GamesController {
     @RequestMapping(value = "/games/{gameid}/players/{playerid}/ready", method = RequestMethod.PUT)
     public void setReady(@PathVariable String gameid, @PathVariable String playerid) {
         Game game = gameList.getGame(gameid);
-        if (game == null)
-            throw new GameNotFoundException();
-        Player player = game.getPlayer(playerid);
-        if (player == null)
-            throw new PlayerNotFoundException();
 
-        game.setReady(player, true);
+        if (game == null) {
+            throw new GameNotFoundException();
+        }
+
+        Player player = gamesServiceBusinessLogic.getPlayer(game, playerid);
+
+        if (player == null) {
+            throw new PlayerNotFoundException();
+        }
+
+        gamesServiceBusinessLogic.setPlayerReady(game, player, true);
     }
 
     @RequestMapping(value = "/games/{gameid}/players/{playerid}/ready", method = RequestMethod.GET)
     public boolean getReady(@PathVariable String gameid, @PathVariable String playerid) {
         Game game = gameList.getGame(gameid);
-        if (game == null)
-            throw new GameNotFoundException();
-        Player player = game.getPlayer(playerid);
-        if (player == null)
-            throw new PlayerNotFoundException();
 
-        return game.getReady(player);
+        if (game == null) {
+            throw new GameNotFoundException();
+        }
+
+        Player player = gamesServiceBusinessLogic.getPlayer(game, playerid);
+
+        if (player == null) {
+            throw new PlayerNotFoundException();
+        }
+
+        return gamesServiceBusinessLogic.getReadyPlayer(game, player);
     }
 
     @RequestMapping(value = "/games/{gameid}/players/current")
@@ -88,7 +101,7 @@ public class GamesController {
         if(game == null) {
             throw new GameNotFoundException();
         }
-        Player currentPlayer = game.getCurrentPlayer();
+        Player currentPlayer = gamesServiceBusinessLogic.getCurrentPlayer(game);
         if (currentPlayer == null) {
             throw new PlayerNotFoundException();
         }
