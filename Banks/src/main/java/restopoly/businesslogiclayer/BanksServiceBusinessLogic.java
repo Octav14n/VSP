@@ -2,7 +2,9 @@ package restopoly.businesslogiclayer;
 
 import restopoly.dataaccesslayer.entities.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Paddy-Gaming on 06.12.2015.
@@ -54,12 +56,34 @@ public class BanksServiceBusinessLogic {
     /**
      * This method creates a new bank. After creating the bank will be added to the list with all available banks.
      * @param listWithAvailableBanks This is the list with every existing bank for any game.
-     * @param gameid The gameid is given to set the new bank to the game with this ID.
-     * @return Returns a new Bank.
+     * @param gameid                 The gameid is given to set the new bank to the game with this ID.
+     * @return                       Returns a new Bank.
      */
     public Bank createBank(BankList listWithAvailableBanks, int gameid) {
         Bank newBank = new Bank();
         listWithAvailableBanks.addBank(newBank, gameid);
         return newBank;
+    }
+
+    public void addTransferToTransferList(Transfer transfer, int gameid) {
+
+    }
+
+    /**
+     * This method will return all actual available transfers as a List of transfers.
+     *
+     * @param transferList This list holds every Transfer which is / was available.
+     * @param gameid       The gameid shows the identifier for the transfers into a game.
+     * @return             Returns a list with all available transfers.
+     */
+    public List<Transfer> getAllAvailableTransfers(TransferList transferList, int gameid) {
+        Map<Integer, Transfer> transferMap = transferList.getTransfers();
+        List<Transfer> transfers = new ArrayList<>();
+
+        for (Transfer transfer : transferMap.values()) {
+            transfers.add(transfer);
+        }
+
+        return transfers;
     }
 }

@@ -7,10 +7,7 @@ import restopoly.accesslayer.exceptions.BankAccountNotFoundException;
 import restopoly.accesslayer.exceptions.BankInsufficientFundsException;
 import restopoly.accesslayer.exceptions.BankNotFoundException;
 import restopoly.businesslogiclayer.BanksServiceBusinessLogic;
-import restopoly.dataaccesslayer.entities.Bank;
-import restopoly.dataaccesslayer.entities.BankAccount;
-import restopoly.dataaccesslayer.entities.BankList;
-import restopoly.dataaccesslayer.entities.Event;
+import restopoly.dataaccesslayer.entities.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +19,38 @@ import java.util.List;
 @RequestMapping("/banks")
 public class BanksController {
     private BankList listWithAvailableBanks = new BankList();
+    private TransferList transferList = new TransferList();
     private BanksServiceBusinessLogic banksServiceBusinessLogic = new BanksServiceBusinessLogic();
+
+    @RequestMapping(value = "/{gameid}", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public Bank getBankForGameID(@PathVariable int gameid) {
+        Bank bank = listWithAvailableBanks.getBank(gameid);
+
+        if (bank == null) {
+            throw new BankNotFoundException();
+        }
+
+        return bank;
+    }
+
+//    TODO: Implement this method later, when all components are available!
+//    @RequestMapping(value = "/{gameid}", method = RequestMethod.PUT)
+//    public void addBankToGame(@PathVariable int gameid) {
+//
+//    }
+
+    @RequestMapping(value = "/{gameid}/transfers", method = RequestMethod.GET)
+    @ResponseStatus(HttpStatus.OK)
+    public List<Transfer> getAllAvailableTransfers(@PathVariable int gameid) {
+        List<Transfer> transfers = banksServiceBusinessLogic.getAllAvailableTransfers(transferList, gameid);
+
+        if (transfers == null) {
+            // TODO: No available transfer exception!
+        }
+
+        return transfers;
+    }
 
     @RequestMapping(value = "/{gameid}/players", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
