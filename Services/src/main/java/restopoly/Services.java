@@ -1,7 +1,7 @@
 package restopoly;
 
 import org.springframework.web.client.RestTemplate;
-import restopoly.entities.Service;
+import restopoly.dataaccesslayer.entities.Service;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;

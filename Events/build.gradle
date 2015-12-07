@@ -32,6 +32,7 @@ dependencies {
     compile("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
     compile("org.springframework:spring-web:${springWebVersion}")
     compile project(":Services")
+    compile project(":Games")
 
     testCompile("org.springframework:spring-test:${springWebVersion}")
     testCompile("com.jayway.restassured:rest-assured:2.7.0")

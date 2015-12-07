@@ -7,14 +7,14 @@ import javax.validation.constraints.NotNull;
  */
 public class Event {
     @NotNull
-    String type; // internal type of the event (e.g bank transfer, rent, got to jail, estate transfer)
+    String type;                   // internal type of the event (e.g bank transfer, rent, got to jail, estate transfer)
     @NotNull
-    String name; // human readable name for this event
+    String name;                   // human readable name for this event
     @NotNull
-    String reason; // a description why this event occured
-    String resource; // the uri of the resource related to this event
+    String reason;                 // a description why this event occured
+    String resource;               // the uri of the resource related to this event
     @NotNull
-    Player player; // The player issued this event
+    Player player;                 // The player issued this event
 
     public Event(String type, String name, String reason, String resource, Player player) {
         this.type = type;
@@ -22,6 +22,10 @@ public class Event {
         this.reason = reason;
         this.resource = resource;
         this.player = player;
+    }
+
+    public Event() {
+
     }
 
     public String getType() {

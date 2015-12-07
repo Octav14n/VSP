@@ -12,14 +12,14 @@ import java.util.List;
 /**
  * Created by octavian on 04.12.15.
  */
-@RestController("/events")
+@RestController
 public class EventsController {
     private RestTemplate restTemplate = new RestTemplate();
     private List<Event> events = new ArrayList<>();
     private List<Subscription> subscriptions = new ArrayList<>();
 
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = "/", method = RequestMethod.POST)
+    @RequestMapping(value = "/events", method = RequestMethod.POST)
     public String createEvent(Event event, @RequestParam String gameid) {
         events.add(event);
 
@@ -34,6 +34,7 @@ public class EventsController {
         return "/events/" + (events.indexOf(event));
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/events/subscriptions", method = RequestMethod.POST)
     public void subscribe(Subscription subscription) {
         subscriptions.add(subscription);

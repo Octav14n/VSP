@@ -1,0 +1,5 @@
+include ":Services"
+project(":Services").projectDir = file("../Services")
+
+include ":Games"
+project(":Games").projectDir = file("../Games")

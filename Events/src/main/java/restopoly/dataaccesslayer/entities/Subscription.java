@@ -14,6 +14,10 @@ public class Subscription {
         this.event = event;
     }
 
+    public Subscription() {
+
+    }
+
     public String getGameid() {
         return gameid;
     }
