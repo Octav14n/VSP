@@ -3,6 +3,7 @@ package restopoly.businesslogiclayer;
 import restopoly.dataaccesslayer.entities.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -10,9 +11,19 @@ import java.util.Map;
  * Created by Paddy-Gaming on 06.12.2015.
  */
 public class BanksServiceBusinessLogic {
+    private BankList listWithAvailableBanks;
 
     public BanksServiceBusinessLogic() {
+        listWithAvailableBanks = new BankList();
+    }
 
+    /**
+     * Gets the bank for the given game.
+     * @param gameid ID of the game from which you want the bank.
+     * @return Bank if the game already owns a bank. null otherwise.
+     */
+    public Bank getBank(String gameid) {
+        return listWithAvailableBanks.getBank(gameid);
     }
 
     /**
@@ -55,17 +66,16 @@ public class BanksServiceBusinessLogic {
 
     /**
      * This method creates a new bank. After creating the bank will be added to the list with all available banks.
-     * @param listWithAvailableBanks This is the list with every existing bank for any game.
      * @param gameid                 The gameid is given to set the new bank to the game with this ID.
      * @return                       Returns a new Bank.
      */
-    public Bank createBank(BankList listWithAvailableBanks, int gameid) {
+    public Bank createBank(String gameid) {
         Bank newBank = new Bank();
         listWithAvailableBanks.addBank(newBank, gameid);
         return newBank;
     }
 
-    public void addTransferToTransferList(Transfer transfer, int gameid) {
+    public void addTransferToTransferList(Transfer transfer, String gameid) {
 
     }
 
@@ -76,8 +86,8 @@ public class BanksServiceBusinessLogic {
      * @param gameid       The gameid shows the identifier for the transfers into a game.
      * @return             Returns a list with all available transfers.
      */
-    public List<Transfer> getAllAvailableTransfers(TransferList transferList, int gameid) {
-        Map<Integer, Transfer> transferMap = transferList.getTransfers();
+    public List<Transfer> getAllAvailableTransfers(TransferList transferList, String gameid) {
+        Map<String, Transfer> transferMap = transferList.getTransfers();
         List<Transfer> transfers = new ArrayList<>();
 
         for (Transfer transfer : transferMap.values()) {
@@ -85,5 +95,58 @@ public class BanksServiceBusinessLogic {
         }
 
         return transfers;
+    }
+
+    /**
+     * This method will add the given amount of money to the given BankAccount.
+     * @param from account where the money will be added/substracted to/from.
+     * @param amount amount, if positive we will add money, if negative we will substract money.
+     * @return Events that happened while adding/substracting money.
+     */
+    public List<Event> transferMoney(Bank bank, BankAccount from, BankAccount to, int amount, String reason) {
+        try {
+            // TODO: Inform all others that we will do things to this bankAccount.
+            lockBankMutex(bank);
+            if (from != null) {
+                from.addSaldo(-amount);
+            }
+
+            // Simulate an Exception after we collected the money from "from",
+            // without giving it to "to".
+            // Also: Mobbing Mary Poppins.
+            if ("Supercalifragilisticexpialigetisch".equals(reason)) {
+                from.addSaldo(amount); // TODO: remove dirty hack.
+                throw new RuntimeException(
+                    "Supercalifragilisticexpialigetisch ist ein verbotener Ueberweisungszweck!");
+            }
+
+            if (to != null) {
+                to.addSaldo(amount);
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            unlockBankMutex(bank);
+        }
+
+        return Collections.emptyList(); // We didn't produce any events.
+    }
+
+    /**
+     * Waits for the Bank to be locked to manipulate data.
+     * @param bank
+     */
+    public void lockBankMutex(Bank bank) throws InterruptedException {
+        // TODO: Inform all other services that we want the muhtex.
+        bank.muhtex.acquire();
+    }
+
+    /**
+     * Unlocks the muhtex of the Bank after manipulating data.
+     * @param bank
+     */
+    public void unlockBankMutex(Bank bank) {
+        // TODO: Inform all other services that we don't want the muhtex.
+        bank.muhtex.release();
     }
 }

@@ -1,11 +1,10 @@
 package restopoly.accesslayer.banks;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import restopoly.accesslayer.exceptions.BankAccountAlreadyExistsException;
-import restopoly.accesslayer.exceptions.BankAccountNotFoundException;
-import restopoly.accesslayer.exceptions.BankInsufficientFundsException;
-import restopoly.accesslayer.exceptions.BankNotFoundException;
+import restopoly.accesslayer.exceptions.*;
 import restopoly.businesslogiclayer.BanksServiceBusinessLogic;
 import restopoly.dataaccesslayer.entities.*;
 
@@ -18,14 +17,15 @@ import java.util.List;
 @RestController
 @RequestMapping("/banks")
 public class BanksController {
-    private BankList listWithAvailableBanks = new BankList();
     private TransferList transferList = new TransferList();
-    private BanksServiceBusinessLogic banksServiceBusinessLogic = new BanksServiceBusinessLogic();
+    @Autowired
+    private BanksServiceBusinessLogic banksServiceBusinessLogic;
+
 
     @RequestMapping(value = "/{gameid}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public Bank getBankForGameID(@PathVariable int gameid) {
-        Bank bank = listWithAvailableBanks.getBank(gameid);
+    public Bank getBankForGameID(@PathVariable String gameid) {
+        Bank bank = banksServiceBusinessLogic.getBank(gameid);
 
         if (bank == null) {
             throw new BankNotFoundException();
@@ -34,15 +34,20 @@ public class BanksController {
         return bank;
     }
 
-//    TODO: Implement this method later, when all components are available!
-//    @RequestMapping(value = "/{gameid}", method = RequestMethod.PUT)
-//    public void addBankToGame(@PathVariable int gameid) {
-//
-//    }
+    @RequestMapping(value = "/{gameid}", method = RequestMethod.PUT)
+    public void createBank(@PathVariable String gameid) {
+        Bank bank = banksServiceBusinessLogic.getBank(gameid);
 
-    @RequestMapping(value = "/{gameid}/transfers", method = RequestMethod.GET)
+        if (bank != null) {
+            throw new BankAlreadyExistsException();
+        }
+
+        banksServiceBusinessLogic.createBank(gameid);
+    }
+
+    /*@RequestMapping(value = "/{gameid}/transfers", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)
-    public List<Transfer> getAllAvailableTransfers(@PathVariable int gameid) {
+    public List<Transfer> getAllAvailableTransfers(@PathVariable String gameid) {
         List<Transfer> transfers = banksServiceBusinessLogic.getAllAvailableTransfers(transferList, gameid);
 
         if (transfers == null) {
@@ -50,15 +55,15 @@ public class BanksController {
         }
 
         return transfers;
-    }
+    }*/
 
     @RequestMapping(value = "/{gameid}/players", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public void createBankAccount(@PathVariable int gameid, @RequestBody BankAccount bankAccount) {
-        Bank bank = listWithAvailableBanks.getBank(gameid);
+    public void createBankAccount(@PathVariable String gameid, @RequestBody BankAccount bankAccount) {
+        Bank bank = banksServiceBusinessLogic.getBank(gameid);
 
         if (bank == null) {
-            bank = banksServiceBusinessLogic.createBank(listWithAvailableBanks, gameid);
+            throw new BankNotFoundException();
         }
 
         if (banksServiceBusinessLogic.isBankAccountExisting(bankAccount, bank)) {
@@ -69,8 +74,8 @@ public class BanksController {
     }
 
     @RequestMapping(value = "/{gameid}/players", method = RequestMethod.GET)
-    public List<BankAccount> getBankAccounts(@PathVariable int gameid) {
-        Bank bank = listWithAvailableBanks.getBank(gameid);
+    public List<BankAccount> getBankAccounts(@PathVariable String gameid) {
+        Bank bank = banksServiceBusinessLogic.getBank(gameid);
         if (bank == null) {
             throw new BankNotFoundException();
         }
@@ -78,12 +83,12 @@ public class BanksController {
     }
 
     @RequestMapping(value = "/{gameid}/players/{playerid}", method = RequestMethod.GET)
-    public int getBankAccountSaldo(@PathVariable int gameid, @PathVariable String playerid) {
+    public int getBankAccountSaldo(@PathVariable String gameid, @PathVariable String playerid) {
 
-        Bank bank = listWithAvailableBanks.getBank(gameid);
+        Bank bank = banksServiceBusinessLogic.getBank(gameid);
 
         if (bank == null) {
-            bank = banksServiceBusinessLogic.createBank(listWithAvailableBanks, gameid);
+            throw new BankNotFoundException();
         }
 
         BankAccount bankAccount = banksServiceBusinessLogic.getBankAccount(bank, playerid);
@@ -93,81 +98,55 @@ public class BanksController {
 
     @RequestMapping(value = "/{gameid}/transfer/to/{to}/{amount}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Event> createBankTransferTo(@PathVariable int gameid, @PathVariable String to,
+    public List<Event> createBankTransferTo(@PathVariable String gameid, @PathVariable String to,
         @PathVariable int amount, @RequestBody String reason) {
 
-        Bank bank = listWithAvailableBanks.getBank(gameid);
+        Bank bank = banksServiceBusinessLogic.getBank(gameid);
 
         if (bank == null) {
-            bank = banksServiceBusinessLogic.createBank(listWithAvailableBanks, gameid);
+            throw new BankNotFoundException();
         }
 
         BankAccount bankAccount = banksServiceBusinessLogic.getBankAccount(bank, to);
 
-//        BankAccount bankAccount = getBankAccount(gameid, to);
-        bankAccount.addSaldo(amount);
-        return Collections.emptyList();
+        return banksServiceBusinessLogic.transferMoney(bank, null, bankAccount, amount, reason);
     }
 
     @RequestMapping(value = "/{gameid}/transfer/from/{from}/{amount}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public List<Event> createBankTransferFrom(@PathVariable int gameid, @PathVariable String from,
+    public List<Event> createBankTransferFrom(@PathVariable String gameid, @PathVariable String from,
         @PathVariable int amount, @RequestBody String reason) {
 
-        Bank bank = listWithAvailableBanks.getBank(gameid);
+        Bank bank = banksServiceBusinessLogic.getBank(gameid);
 
         if (bank == null) {
-            bank = banksServiceBusinessLogic.createBank(listWithAvailableBanks, gameid);
+            throw new BankNotFoundException();
         }
 
         BankAccount bankAccount = banksServiceBusinessLogic.getBankAccount(bank, from);
 
-//        BankAccount bankAccount = getBankAccount(gameid, from);
         if (bankAccount.getSaldo() < amount)
             throw new BankInsufficientFundsException();
-        bankAccount.addSaldo(-amount);
-        return Collections.emptyList();
+
+        return banksServiceBusinessLogic.transferMoney(bank, bankAccount, null, amount, reason);
     }
 
     @RequestMapping(value = "/{gameid}/transfer/from/{from}/to/{to}/{amount}", method = RequestMethod.POST)
     @ResponseStatus(HttpStatus.CREATED)
-    public synchronized List<Event> createBankTransfer(@PathVariable int gameid, @PathVariable String from,
+    public synchronized List<Event> createBankTransfer(@PathVariable String gameid, @PathVariable String from,
         @PathVariable String to, @PathVariable int amount, @RequestBody String reason) {
         List<Event> events = Collections.emptyList();
 
-        Bank bank = listWithAvailableBanks.getBank(gameid);
+        Bank bank = banksServiceBusinessLogic.getBank(gameid);
 
         if (bank == null) {
-            bank = banksServiceBusinessLogic.createBank(listWithAvailableBanks, gameid);
+            throw new BankNotFoundException();
         }
 
         BankAccount fromAccount = banksServiceBusinessLogic.getBankAccount(bank, from);
         BankAccount toAccount = banksServiceBusinessLogic.getBankAccount(bank, to);
 
-        // Here we get the values before we change them.
-//        BankAccount fromAccount = getBankAccount(gameid, from);
-//        BankAccount toAccount = getBankAccount(gameid, to);
-        int fromSaldo = fromAccount.getSaldo();
-        int toSaldo = toAccount.getSaldo();
-
-        try {
-            // Here we will change values.
-            events = createBankTransferFrom(gameid, from, amount, reason);
-
-            // Simulate an Exception after we collected the money from "from",
-            // without giving it to "to".
-            // Also: Mobbing Mary Poppins.
-            if ("Supercalifragilisticexpialigetisch".equals(reason))
-                throw new RuntimeException("Supercalifragilisticexpialigetisch ist ein verbotener Ueberweisungszweck!");
-
-            events.addAll(createBankTransferTo(gameid, to, amount, reason));
-        } catch (Throwable e) {
-            // If an Exception is thrown while we change values, we will revert the changes.
-            fromAccount.setSaldo(fromSaldo);
-            toAccount.setSaldo(toSaldo);
-            throw e;
-        }
-        return events;
+        return banksServiceBusinessLogic.transferMoney(bank, fromAccount, toAccount, amount, reason);
     }
 
     /**
@@ -176,8 +155,8 @@ public class BanksController {
      * @param playerId Player which the BankAccount is connected to.
      * @return BankAccount you requested.
      */
-    private BankAccount getBankAccount(int gameid, String playerId) {
-        Bank bank = listWithAvailableBanks.getBank(gameid);
+    private BankAccount getBankAccount(String gameid, String playerId) {
+        Bank bank = banksServiceBusinessLogic.getBank(gameid);
         if (bank == null) {
             throw new BankNotFoundException();
         }

@@ -1,6 +1,7 @@
 package restopoly.dataaccesslayer.entities;
 
-import restopoly.accesslayer.exceptions.BankAccountAlreadyExistsException;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sun.corba.se.impl.orbutil.concurrent.Mutex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,8 @@ import java.util.List;
  * Created by Paddy-Gaming on 14.11.2015.
  */
 public class Bank {
+    @JsonIgnore
+    public Mutex muhtex = new Mutex();
     private List<BankAccount> bankAccounts;
 
     public Bank() {

@@ -44,6 +44,13 @@ public class BanksControllerTest {
         BankAccount bankAccountSimon = new BankAccount(playerSimon, 0);
         BankAccount bankAccountPatrick = new BankAccount(playerPatrick,  42);
 
+        // PUT --> Create a bank.
+        given()
+            .pathParam("gameid", game.getGameid())
+            .when().put("/banks/{gameid}").then()
+            .statusCode(Matchers.greaterThanOrEqualTo(200))
+            .statusCode(Matchers.lessThan(300));
+
         // POST --> Creates a bank account for one specific game / user combo.
         given()
             .contentType(ContentType.JSON)
