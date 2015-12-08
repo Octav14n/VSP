@@ -22,11 +22,11 @@ import static org.junit.Assert.*;
 /**
  * Created by octavian on 04.12.15.
  */
-/*@RunWith(SpringJUnit4ClassRunner.class)   // 1
+@RunWith(SpringJUnit4ClassRunner.class)   // 1
 @SpringApplicationConfiguration(classes = Main.class)   // 2
 @WebAppConfiguration   // 3
-@IntegrationTest("server.port:0")   // 4*/
-public class EventsControllerTest {
+@IntegrationTest("server.port:0")   // 4
+public class PlayersControllerTest {
     //@Value("${local.server.port}")   // 6
         int port = 4567;
 
