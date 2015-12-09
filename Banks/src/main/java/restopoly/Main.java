@@ -25,21 +25,10 @@ public class Main {
     @Autowired
     ReplicationBusinessLogic replication;
     @Value("${server.port}")
-    String port;
+    int port;
 
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
-    }
-
-
-    @Bean
-    public ReplicationBusinessLogic getReplicationBusinessLogic() {
-        return new ReplicationBusinessLogic();
-    }
-
-    @Bean
-    public BanksServiceBusinessLogic getBanksServiceBusinessLogic() {
-        return new BanksServiceBusinessLogic();
     }
 
     @EventListener
@@ -47,7 +36,7 @@ public class Main {
         Services s = new Services(new Service("Super toller Banks Service.", "Hier gibt es frische Kekse", "banks", "http://127.0.0.1"));
         //s.register();
 
-        if (!"4567".equals(port)) {
+        if (4567 != port) {
             // Der 1. darf sich nicht bei sich selber registrieren.
             replication.registerMeAt("http://127.0.0.1:4567/banks/replication");
         }

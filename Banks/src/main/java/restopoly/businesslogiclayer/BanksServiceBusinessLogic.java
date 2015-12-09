@@ -1,5 +1,7 @@
 package restopoly.businesslogiclayer;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import restopoly.dataaccesslayer.entities.*;
 
 import java.util.ArrayList;
@@ -10,8 +12,11 @@ import java.util.Map;
 /**
  * Created by Paddy-Gaming on 06.12.2015.
  */
+@Component
 public class BanksServiceBusinessLogic {
     private BankList listWithAvailableBanks;
+    @Autowired
+    private ReplicationBusinessLogic replicationLogic;
 
     public BanksServiceBusinessLogic() {
         listWithAvailableBanks = new BankList();
@@ -103,10 +108,10 @@ public class BanksServiceBusinessLogic {
      * @param amount amount, if positive we will add money, if negative we will substract money.
      * @return Events that happened while adding/substracting money.
      */
-    public List<Event> transferMoney(Bank bank, BankAccount from, BankAccount to, int amount, String reason) {
+    public List<Event> transferMoney(String gameid, BankAccount from, BankAccount to, int amount, String reason) {
         try {
             // TODO: Inform all others that we will do things to this bankAccount.
-            lockBankMutex(bank);
+            replicationLogic.lockBankMutex(gameid);
             if (from != null) {
                 from.addSaldo(-amount);
             }
@@ -126,27 +131,35 @@ public class BanksServiceBusinessLogic {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-            unlockBankMutex(bank);
+            replicationLogic.unlockBankMutex(gameid);
         }
 
         return Collections.emptyList(); // We didn't produce any events.
     }
 
-    /**
-     * Waits for the Bank to be locked to manipulate data.
-     * @param bank
-     */
-    public void lockBankMutex(Bank bank) throws InterruptedException {
-        // TODO: Inform all other services that we want the muhtex.
-        bank.muhtex.acquire();
-    }
-
-    /**
-     * Unlocks the muhtex of the Bank after manipulating data.
-     * @param bank
-     */
-    public void unlockBankMutex(Bank bank) {
-        // TODO: Inform all other services that we don't want the muhtex.
-        bank.muhtex.release();
-    }
+//    /**
+//     * Waits for the Bank to be locked to manipulate data.
+//     * @param bank
+//     */
+//    public void lockBankMutex(Bank bank) throws InterruptedException {
+//        // TODO: Inform all other services that we want the muhtex.
+//        bank.muhtex.acquire();
+//    }
+//
+//    /**
+//     * Unlocks the muhtex of the Bank after manipulating data.
+//     * @param bank
+//     */
+//    public void unlockBankMutex(Bank bank) {
+//        // TODO: Inform all other services that we don't want the muhtex.
+//        bank.muhtex.release();
+//    }
+//
+//    public boolean isLockedBankMutex(Bank bank) {
+//        try {
+//            return bank.muhtex.attempt(0);
+//        } catch (InterruptedException e) {
+//            return false;
+//        }
+//    }
 }

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import restopoly.accesslayer.exceptions.*;
 import restopoly.businesslogiclayer.BanksServiceBusinessLogic;
+import restopoly.businesslogiclayer.ReplicationBusinessLogic;
 import restopoly.dataaccesslayer.entities.*;
 
 import java.util.Collections;
@@ -20,6 +21,8 @@ public class BanksController {
     private TransferList transferList = new TransferList();
     @Autowired
     private BanksServiceBusinessLogic banksServiceBusinessLogic;
+    @Autowired
+    private ReplicationBusinessLogic replicationLogic;
 
 
     @RequestMapping(value = "/{gameid}", method = RequestMethod.GET)
@@ -42,7 +45,7 @@ public class BanksController {
             throw new BankAlreadyExistsException();
         }
 
-        banksServiceBusinessLogic.createBank(gameid);
+        replicationLogic.sendToMaster("/{gameid}", null, gameid);
     }
 
     /*@RequestMapping(value = "/{gameid}/transfers", method = RequestMethod.GET)
@@ -70,7 +73,7 @@ public class BanksController {
             throw new BankAccountAlreadyExistsException();
         }
 
-        bank.addBankAccount(bankAccount);
+        replicationLogic.sendToMaster("/{gameid}/players", bankAccount, gameid);
     }
 
     @RequestMapping(value = "/{gameid}/players", method = RequestMethod.GET)
@@ -109,7 +112,7 @@ public class BanksController {
 
         BankAccount bankAccount = banksServiceBusinessLogic.getBankAccount(bank, to);
 
-        return banksServiceBusinessLogic.transferMoney(bank, null, bankAccount, amount, reason);
+        return banksServiceBusinessLogic.transferMoney(gameid, null, bankAccount, amount, reason);
     }
 
     @RequestMapping(value = "/{gameid}/transfer/from/{from}/{amount}", method = RequestMethod.POST)
@@ -128,7 +131,7 @@ public class BanksController {
         if (bankAccount.getSaldo() < amount)
             throw new BankInsufficientFundsException();
 
-        return banksServiceBusinessLogic.transferMoney(bank, bankAccount, null, amount, reason);
+        return banksServiceBusinessLogic.transferMoney(gameid, bankAccount, null, amount, reason);
     }
 
     @RequestMapping(value = "/{gameid}/transfer/from/{from}/to/{to}/{amount}", method = RequestMethod.POST)
@@ -146,7 +149,7 @@ public class BanksController {
         BankAccount fromAccount = banksServiceBusinessLogic.getBankAccount(bank, from);
         BankAccount toAccount = banksServiceBusinessLogic.getBankAccount(bank, to);
 
-        return banksServiceBusinessLogic.transferMoney(bank, fromAccount, toAccount, amount, reason);
+        return banksServiceBusinessLogic.transferMoney(gameid, fromAccount, toAccount, amount, reason);
     }
 
     /**
