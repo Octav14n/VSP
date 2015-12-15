@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import restopoly.dataaccesslayer.entities.Bank;
 import restopoly.dataaccesslayer.entities.BankAccount;
+import restopoly.dataaccesslayer.entities.Event;
 
 import java.util.*;
 
@@ -70,6 +71,18 @@ public class ReplicationBusinessLogic {
             System.out.println("Informiere ueber BankAccount " + bankAccount.getPlayer().getId() + " fuer Spiel " + gameid + ".");
             this.broadcastMessagePost("/{gameid}/players", bankAccount, String.class, gameid);
         }
+    }
+
+    public synchronized List<Event> createBankTransfer(String gameid, BankAccount from, BankAccount to, int amount, String reason) {
+        List<Event> eventList = new ArrayList<>();
+        banksLogic.transferMoney(gameid, from, to, amount, reason);
+        if (this.isMaster()) {
+            Map<String, Event[]> events = this.broadcastMessagePost("/{gameid}/transfer/from/{from}/to/{to}/{amount}", reason, Event[].class, gameid, from, to, amount);
+            for (Event[] event : events.values()) {
+                eventList.addAll(Arrays.asList(event));
+            }
+        }
+        return eventList;
     }
 
     /**

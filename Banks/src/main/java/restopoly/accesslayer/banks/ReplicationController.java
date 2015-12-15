@@ -12,10 +12,12 @@ import restopoly.businesslogiclayer.BanksServiceBusinessLogic;
 import restopoly.businesslogiclayer.ReplicationBusinessLogic;
 import restopoly.dataaccesslayer.entities.Bank;
 import restopoly.dataaccesslayer.entities.BankAccount;
+import restopoly.dataaccesslayer.entities.Event;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -54,6 +56,24 @@ public class ReplicationController {
         }
 
         replicationLogic.createBankAccount(gameid, bank, bankAccount);
+    }
+
+    @RequestMapping(value = "/{gameid}/transfer/from/{from}/to/{to}/{amount}", method = RequestMethod.POST)
+    @ResponseStatus(HttpStatus.CREATED)
+    public synchronized List<Event> createBankTransfer(@PathVariable String gameid, @PathVariable String from,
+                                                       @PathVariable String to, @PathVariable int amount, @RequestBody String reason) {
+        List<Event> events = Collections.emptyList();
+
+        Bank bank = banksLogic.getBank(gameid);
+
+        if (bank == null) {
+            throw new BankNotFoundException();
+        }
+
+        BankAccount fromAccount = banksLogic.getBankAccount(bank, from);
+        BankAccount toAccount = banksLogic.getBankAccount(bank, to);
+
+        return banksLogic.transferMoney(gameid, fromAccount, toAccount, amount, reason);
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)

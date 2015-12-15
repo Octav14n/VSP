@@ -144,6 +144,7 @@ public class BanksServiceBusinessLogic {
                 if (to != null) {
                     to.setSaldo(tmpTo);
                 }
+                throw new RuntimeException("Send money doesnt work! Rollback...");
             }
         } catch (InterruptedException e) {
             e.printStackTrace();

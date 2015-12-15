@@ -160,7 +160,12 @@ public class BanksController {
         BankAccount fromAccount = banksServiceBusinessLogic.getBankAccount(bank, from);
         BankAccount toAccount = banksServiceBusinessLogic.getBankAccount(bank, to);
 
-        return banksServiceBusinessLogic.transferMoney(gameid, fromAccount, toAccount, amount, reason);
+        if (!replicationLogic.isMaster()) {
+            replicationLogic.sendToMaster("/{gameid}/transfer/from/{from}/to/{to}/{amount}", reason, gameid, from, to);
+        } else {
+            return replicationLogic.createBankTransfer(gameid, fromAccount, toAccount, amount, reason);
+        }
+        return events;
     }
 
     /**
