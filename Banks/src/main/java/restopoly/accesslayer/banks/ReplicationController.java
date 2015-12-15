@@ -37,12 +37,7 @@ public class ReplicationController {
             throw new BankAlreadyExistsException();
         }
 
-        System.out.println("Erstelle Bank fuer Spiel " + gameid + ".");
-        banksLogic.createBank(gameid);
-        if (replicationLogic.isMaster()) {
-            System.out.println("Informiere andere ueber erstellung von Spiel " + gameid + ".");
-            replicationLogic.broadcastMessagePost("/{gameid}", null, String.class, gameid);
-        }
+        replicationLogic.createBank(gameid);
     }
 
     @RequestMapping(value = "/{gameid}/players", method = RequestMethod.POST)
@@ -58,12 +53,7 @@ public class ReplicationController {
             throw new BankAccountAlreadyExistsException();
         }
 
-        System.out.println("Erstelle BankAccount " + bankAccount.getPlayer().getId() + " fuer Spiel " + gameid + ".");
-        bank.addBankAccount(bankAccount);
-        if (replicationLogic.isMaster()) {
-            System.out.println("Informiere ueber BankAccount " + bankAccount.getPlayer().getId() + " fuer Spiel " + gameid + ".");
-            replicationLogic.broadcastMessagePost("/{gameid}/players", bankAccount, String.class, gameid);
-        }
+        replicationLogic.createBankAccount(gameid, bank, bankAccount);
     }
 
     @RequestMapping(value = "/register", method = RequestMethod.POST)

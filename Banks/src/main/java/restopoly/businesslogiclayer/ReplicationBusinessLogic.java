@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import restopoly.dataaccesslayer.entities.Bank;
+import restopoly.dataaccesslayer.entities.BankAccount;
 
 import java.util.*;
 
@@ -40,6 +41,36 @@ public class ReplicationBusinessLogic {
     int masterBully;
     // Way to call our master.
     String masterUri;
+
+    /**
+     * Creates a Bank for a given game.
+     * If we are the Master this bank will be created on all Services.
+     * @param gameid
+     */
+    public void createBank(String gameid) {
+        System.out.println("Erstelle Bank fuer Spiel " + gameid + ".");
+        banksLogic.createBank(gameid);
+        if (this.isMaster()) {
+            System.out.println("Informiere andere ueber erstellung von Spiel " + gameid + ".");
+            this.broadcastMessagePost("/{gameid}", null, String.class, gameid);
+        }
+    }
+
+    /**
+     * Creates a BankAccount for a given game.
+     * If we are the Master this bankaccount will be created on all Services.
+     * @param gameid
+     * @param bank
+     * @param bankAccount
+     */
+    public void createBankAccount(String gameid, Bank bank, BankAccount bankAccount) {
+        System.out.println("Erstelle BankAccount " + bankAccount.getPlayer().getId() + " fuer Spiel " + gameid + ".");
+        bank.addBankAccount(bankAccount);
+        if (this.isMaster()) {
+            System.out.println("Informiere ueber BankAccount " + bankAccount.getPlayer().getId() + " fuer Spiel " + gameid + ".");
+            this.broadcastMessagePost("/{gameid}/players", bankAccount, String.class, gameid);
+        }
+    }
 
     /**
      * Returns the Bank for the given game.
@@ -123,7 +154,11 @@ public class ReplicationBusinessLogic {
      * @param path Relative path we want to access. Has to start with "/".
      */
     public void sendToMaster(String path, Object requestObject, Object... uriVariables) {
-        template.postForObject(masterUri + path, requestObject, String.class, uriVariables);
+        if (null == masterUri) {
+            throw new RuntimeException("Master triest to send something to Master: " + path);
+        } else {
+            template.postForObject(masterUri + path, requestObject, String.class, uriVariables);
+        }
     }
 
     public boolean isMaster() {

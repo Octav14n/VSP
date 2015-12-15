@@ -39,8 +39,6 @@ public class Main {
         if (4567 != port) {
             // Der 1. darf sich nicht bei sich selber registrieren.
             replication.registerMeAt("http://127.0.0.1:4567/banks/replication");
-        } else {
-            replication.setMaster("http://127.0.0.1:4567/banks/replication");
         }
     }
 }

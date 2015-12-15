@@ -45,7 +45,13 @@ public class BanksController {
             throw new BankAlreadyExistsException();
         }
 
-        replicationLogic.sendToMaster("/{gameid}", null, gameid);
+        if (!replicationLogic.isMaster()) {
+            // Master must create the bank.
+            replicationLogic.sendToMaster("/{gameid}", null, gameid);
+        } else {
+            // We will create the bank.
+            replicationLogic.createBank(gameid);
+        }
     }
 
     /*@RequestMapping(value = "/{gameid}/transfers", method = RequestMethod.GET)
@@ -73,7 +79,13 @@ public class BanksController {
             throw new BankAccountAlreadyExistsException();
         }
 
-        replicationLogic.sendToMaster("/{gameid}/players", bankAccount, gameid);
+        if (!replicationLogic.isMaster()) {
+            // Master must create the bank account.
+            replicationLogic.sendToMaster("/{gameid}/players", bankAccount, gameid);
+        } else {
+            // We will create the bank account.
+            replicationLogic.createBankAccount(gameid, bank, bankAccount);
+        }
     }
 
     @RequestMapping(value = "/{gameid}/players", method = RequestMethod.GET)
@@ -95,7 +107,6 @@ public class BanksController {
         }
 
         BankAccount bankAccount = banksServiceBusinessLogic.getBankAccount(bank, playerid);
-//        BankAccount bankAccount = getBankAccount(gameid, playerid);
         return bankAccount.getSaldo();
     }
 
