@@ -156,7 +156,12 @@ public class ReplicationBusinessLogic {
         Map<String, T> responses = new HashMap<>();
         for (String service : otherServices) {
             System.out.println("Informiere Service " + service + " mit path " + path + ".");
-            responses.put(service, template.postForObject(service + path, bodyObject, responseObject, uriVariables));
+            try {
+                responses.put(service, template
+                    .postForObject(service + path, bodyObject, responseObject, uriVariables));
+            } catch (Exception e) {
+                System.out.println("Couldn't connect to: " + service);
+            }
         }
         return responses;
     }
@@ -169,8 +174,20 @@ public class ReplicationBusinessLogic {
     public void sendToMaster(String path, Object requestObject, Object... uriVariables) {
         if (null == masterUri) {
             throw new RuntimeException("Master triest to send something to Master: " + path);
-        } else {
-            template.postForObject(masterUri + path, requestObject, String.class, uriVariables);
+        }
+        boolean isSend = false;
+        while (!isSend) {
+            try {
+                template.postForObject(masterUri + path, requestObject, String.class, uriVariables);
+                isSend = true;
+            } catch (Exception e) {
+                System.out.println("Tried to send to Master: " + masterUri + "/" + path + " but failed. Will now reBully.");
+                reBully();
+                if (isMaster()) {
+                    template.postForObject(thisService() + path, requestObject, String.class, uriVariables);
+                    isSend = true;
+                }
+            }
         }
     }
 
