@@ -6,19 +6,16 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import restopoly.entities.Service;
-
-import java.io.File;
-import java.io.IOException;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Created by octavian on 13.10.15.
  */
-@Configuration
-@ComponentScan({"restopoly.accesslayer.player"})
+//@Configuration
+@ComponentScan("restopoly.accesslayer.player")
 @EnableAutoConfiguration
+@EnableSwagger2
 public class Main {
 
     public static void main(String[] args) {

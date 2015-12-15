@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 @WebAppConfiguration   // 3
 @IntegrationTest("server.port:0")   // 4
 public class PlayersControllerTest {
-    //@Value("${local.server.port}")   // 6
+    @Value("${local.server.port}")   // 6
         int port = 4567;
 
     @Before
