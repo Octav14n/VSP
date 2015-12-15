@@ -215,8 +215,7 @@ public class ReplicationBusinessLogic {
     private void registerMeAt(String url, boolean setMaster) {
         System.out.println("Will now register myself at: " + url);
         if (setMaster) {
-            masterBully = 0;
-            masterUri = url;
+            setMaster(url);
         }
         String[] otherServices = template.postForObject(url + "/register?port={port}", null, String[].class, port);
         // Jetzt registrieren wir uns noch an allen anderen Services, die bekannt sind.
@@ -235,5 +234,10 @@ public class ReplicationBusinessLogic {
 
     private String thisService() {
         return makeUrl("127.0.0.1", port);
+    }
+
+    public void setMaster(String masterUri) {
+        masterBully = 0;
+        this.masterUri = masterUri;
     }
 }

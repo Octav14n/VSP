@@ -112,21 +112,38 @@ public class BanksServiceBusinessLogic {
         try {
             // TODO: Inform all others that we will do things to this bankAccount.
             replicationLogic.lockBankMutex(gameid);
+            int tmpFrom = 0;
+            int tmpTo = 0;
             if (from != null) {
-                from.addSaldo(-amount);
+                tmpFrom = from.getSaldo();
             }
-
-            // Simulate an Exception after we collected the money from "from",
-            // without giving it to "to".
-            // Also: Mobbing Mary Poppins.
-            if ("Supercalifragilisticexpialigetisch".equals(reason)) {
-                from.addSaldo(amount); // TODO: remove dirty hack.
-                throw new RuntimeException(
-                    "Supercalifragilisticexpialigetisch ist ein verbotener Ueberweisungszweck!");
-            }
-
             if (to != null) {
-                to.addSaldo(amount);
+                tmpTo = to.getSaldo();
+            }
+
+            try {
+                if (from != null) {
+                    from.addSaldo(-amount);
+                }
+
+                // Simulate an Exception after we collected the money from "from",
+                // without giving it to "to".
+                // Also: Mobbing Mary Poppins.
+                if ("Supercalifragilisticexpialigetisch".equals(reason)) {
+                    throw new RuntimeException(
+                        "Supercalifragilisticexpialigetisch ist ein verbotener Ueberweisungszweck!");
+                }
+
+                if (to != null) {
+                    to.addSaldo(amount);
+                }
+            } catch (Exception e) {
+                if (from != null) {
+                    from.setSaldo(tmpFrom);
+                }
+                if (to != null) {
+                    to.setSaldo(tmpTo);
+                }
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
