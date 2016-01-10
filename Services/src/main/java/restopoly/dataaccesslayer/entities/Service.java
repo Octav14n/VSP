@@ -8,16 +8,13 @@ public class Service {
     String description;
     String service;
     String uri;
-    String status;
-    String _uri;
 
     private Service() {}
 
-    public Service(String name, String description, String service, String uri) {
-        this.name = name;
+    public Service(String description, String service) {
+        this.name = "ps_neon_" + service;
         this.description = description;
         this.service = service;
-        this.uri = uri;
     }
 
     public String getName() {
@@ -32,17 +29,12 @@ public class Service {
         return service;
     }
 
+    public void setUri(String uri) { this.uri = uri; }
+
     public String getUri() {
         return uri;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public String get_uri() {
-        return _uri;
-    }
 
     @Override public String toString() {
         return "Service{" +
@@ -50,8 +42,6 @@ public class Service {
             ", description='" + description + '\'' +
             ", service='" + service + '\'' +
             ", uri='" + uri + '\'' +
-            ", status='" + status + '\'' +
-            ", _uri='" + _uri + '\'' +
             '}';
     }
 }

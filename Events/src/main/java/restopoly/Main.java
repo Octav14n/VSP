@@ -22,7 +22,7 @@ public class Main {
 
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
-        Services s = new Services(new Service("Super toller Events Service.", "Hier gibt es frische Kekse", "events", "http://127.0.0.1"));
+        Services s = new Services(new Service("events service. Patrick & Simon.", "events"), 13403);
         s.register();
     }
 }

@@ -7,6 +7,8 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.security.cert.X509Certificate;
 
 /**
@@ -44,8 +46,17 @@ public class Services {
         }
     }
 
-    public Services(Service service) {
-        this.uri = "https://vs-docker.informatik.haw-hamburg.de/ports/8053/services";
+    public Services(Service service, int port) {
+        try {
+            InetAddress.getByName("vsdocker");
+            this.uri = "http://vsdocker:8053/services";
+            service.setUri("http://vsdocker:" + port + "/");
+            System.out.println("vsdocker ist vorhanden. Ich benutze jetzt: " + this.uri);
+        } catch (UnknownHostException e) {
+            this.uri = "https://vs-docker.informatik.haw-hamburg.de/ports/8053/services";
+            service.setUri("https://vs-docker.informatik.haw-hamburg.de/ports/" + port + "/");
+            System.out.println("vsdocker ist *nicht* vorhanden. Fallback zu " + this.uri);
+        }
         this.service = service;
         restTemplate = new RestTemplate();
     }

@@ -33,7 +33,7 @@ public class Main {
 
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
-        Services s = new Services(new Service("Super toller Banks Service.", "Hier gibt es frische Kekse", "banks", "http://127.0.0.1"));
+        Services s = new Services(new Service("Bank service. Patrick & Simon.", "banks"), 13401);
         //s.register();
 
         if (4567 != port) {
