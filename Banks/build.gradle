@@ -31,6 +31,8 @@ dependencies {
     compile("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
     compile("org.springframework.boot:spring-boot-autoconfigure:${springBootVersion}")
     compile("org.springframework:spring-web:${springWebVersion}")
+    compile("io.springfox:springfox-swagger2:2.2.2")
+    compile('io.springfox:springfox-swagger-ui:2.2.2')
     compile project(":Services")
 
     testCompile("org.springframework:spring-test:${springWebVersion}")
