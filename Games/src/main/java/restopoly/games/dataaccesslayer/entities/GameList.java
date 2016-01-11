@@ -15,10 +15,11 @@ public class GameList {
         games = new ArrayList<>();
     }
 
-    public Game addGame(GameComponents components) {
+    public Game addGame(String uri, GameComponents components) {
+        String gameid = Long.toUnsignedString((long)(Math.random() * Long.MAX_VALUE));
         Game game = new Game(
-            Long.toUnsignedString((long)(Math.random() * Long.MAX_VALUE)),
-            components);
+            gameid,
+            uri + gameid + "/players/", components);
         games.add(game);
         return game;
     }

@@ -1,5 +1,7 @@
 package restopoly.games.accesslayer.games;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -10,6 +12,8 @@ import restopoly.games.dataaccesslayer.entities.Game;
 import restopoly.games.dataaccesslayer.entities.GameComponents;
 import restopoly.games.dataaccesslayer.entities.GameList;
 import restopoly.games.dataaccesslayer.entities.Player;
+import restopoly.services.Services;
+import restopoly.services.dataaccesslayer.entities.Service;
 
 import java.util.List;
 
@@ -17,6 +21,10 @@ import java.util.List;
 public class GamesController {
     private RestTemplate restTemplate = new RestTemplate();
     private GamesServiceBusinessLogic gamesServiceBusinessLogic = new GamesServiceBusinessLogic();
+
+    @Value("${server.port}")
+    int port;
+
 
     private GameList gameList = new GameList();
 
@@ -28,7 +36,8 @@ public class GamesController {
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/games", method = RequestMethod.POST)
     public Game createGame(@RequestBody GameComponents components) {
-        Game game = gameList.addGame(components);
+        String gameUrl = Services.hostAddress(port) + "/games/";
+        Game game = gameList.addGame(gameUrl, components);
 
         // Wir registrieren das neu erstellte Game im Board.
         String boardPutUrl = components.getBoard() + "/" + game.getGameid();

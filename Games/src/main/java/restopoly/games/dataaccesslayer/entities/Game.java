@@ -16,9 +16,11 @@ public class Game {
     private String gameid;
     private GameComponents components;
     private @NotEmpty @NotNull List<Player> players;
+    private String uri;
 
-    public Game(String gameid, GameComponents components) {
+    public Game(String gameid, String uri, GameComponents components) {
         this.gameid = gameid;
+        this.uri = uri;
         this.components = components;
         this.players = new ArrayList<>();
     }
@@ -89,6 +91,10 @@ public class Game {
     public Player getCurrentPlayer() {
         Player currentPlayer = players.get(0);
         return currentPlayer;
+    }
+
+    public String getUri() {
+        return uri;
     }
 
     @Override

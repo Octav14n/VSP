@@ -1,5 +1,7 @@
 package restopoly.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -89,6 +91,14 @@ public class Services {
             return ret + e.toString();
         }
         return ret;
+    }
+
+    public static String hostAddress(int port) {
+        try {
+            return "http://" + getLocalHostLANAddress().getHostAddress() + ":" + port;
+        } catch (UnknownHostException e) {
+            return "http://localhost:" + port;
+        }
     }
 
     /**
