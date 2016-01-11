@@ -14,20 +14,31 @@ import java.util.List;
 public class Game {
 
     private String gameid;
+    private GameComponents components;
     private @NotEmpty @NotNull List<Player> players;
 
-    public Game(String gameid) {
+    public Game(String gameid, GameComponents components) {
         this.gameid = gameid;
+        this.components = components;
         this.players = new ArrayList<>();
     }
 
-  /**
-   * This method will get the gameid for a game.
-   *
-   * @return Returns the gameid as a String (UID).
-   */
-  public String getGameid() {
+    /**
+    * This method will get the gameid for a game.
+    *
+    * @return Returns the gameid as a String (UID).
+    */
+    public String getGameid() {
         return gameid;
+    }
+
+    /**
+     * This method will get the available components linked with this game.
+     *
+     * @return
+     */
+    public GameComponents getComponents() {
+        return components;
     }
 
     /**

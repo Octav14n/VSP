@@ -1,5 +1,7 @@
 package restopoly.games;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,6 +19,8 @@ import restopoly.services.Services;
 @ComponentScan
 @EnableAutoConfiguration
 public class Main {
+    @Value("${server.port}")
+    int port;
 
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
@@ -24,7 +28,7 @@ public class Main {
 
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
-        Services s = new Services(new Service("Games service. Patrick & Simon", "games"), 13400);
+        Services s = new Services(new Service("Games service. Patrick & Simon", "games"), port);
         s.register();
     }
 }

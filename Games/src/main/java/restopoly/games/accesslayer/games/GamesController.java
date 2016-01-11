@@ -7,6 +7,7 @@ import restopoly.games.accesslayer.exceptions.GameNotFoundException;
 import restopoly.games.accesslayer.exceptions.PlayerNotFoundException;
 import restopoly.games.businesslogiclayer.GamesServiceBusinessLogic;
 import restopoly.games.dataaccesslayer.entities.Game;
+import restopoly.games.dataaccesslayer.entities.GameComponents;
 import restopoly.games.dataaccesslayer.entities.GameList;
 import restopoly.games.dataaccesslayer.entities.Player;
 
@@ -16,7 +17,6 @@ import java.util.List;
 public class GamesController {
     private RestTemplate restTemplate = new RestTemplate();
     private GamesServiceBusinessLogic gamesServiceBusinessLogic = new GamesServiceBusinessLogic();
-    private String boardUri = "https://vs-docker.informatik.haw-hamburg.de/ports/18193/boards/";
 
     private GameList gameList = new GameList();
 
@@ -27,12 +27,13 @@ public class GamesController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = "/games", method = RequestMethod.POST)
-    public Game createGame() {
-        Game game = gameList.addGame();
+    public Game createGame(@RequestBody GameComponents components) {
+        Game game = gameList.addGame(components);
 
         // Wir registrieren das neu erstellte Game im Board.
-        // FIXME: reactivate board interaction.
-        //restTemplate.put(boardUri + game.getGameid(), game);
+        String boardPutUrl = components.getBoard() + "/" + game.getGameid();
+        System.out.println("I will now register myself at the board: " + boardPutUrl);
+        restTemplate.put(boardPutUrl, game);
 
         return game;
     }
@@ -59,8 +60,7 @@ public class GamesController {
         game.addPlayer(player);
 
         // Register player to the board.
-        // FIXME: reactivate board interaction.
-        //restTemplate.put(boardUri + game.getGameid() + "/players/" + playerid, player);
+        restTemplate.put(game.getComponents().getBoard() + "/" + game.getGameid() + "/players/" + playerid, player);
     }
 
     @RequestMapping(value = "/games/{gameid}/players/{playerid}/ready", method = RequestMethod.PUT)

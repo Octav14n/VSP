@@ -12,7 +12,7 @@ public class Service {
     private Service() {}
 
     public Service(String description, String service) {
-        this.name = "ps_neon_" + service;
+        this.name = "spahl_haug_" + service;
         this.description = description;
         this.service = service;
     }

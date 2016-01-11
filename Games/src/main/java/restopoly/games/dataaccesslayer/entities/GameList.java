@@ -15,8 +15,10 @@ public class GameList {
         games = new ArrayList<>();
     }
 
-    public Game addGame() {
-        Game game = new Game(UUID.randomUUID().toString());
+    public Game addGame(GameComponents components) {
+        Game game = new Game(
+            Long.toUnsignedString((long)(Math.random() * Long.MAX_VALUE)),
+            components);
         games.add(game);
         return game;
     }

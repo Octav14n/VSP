@@ -46,7 +46,7 @@ jar {
     version = '0.0.1-SNAPSHOT'
     archiveName = 'vsp_abq340.jar'
     if(file("../owncloud/docker_${dockerNumber}").exists()) {
-        destinationDir project.file("../owncloud/docker_${dockerNumber}")
+        destinationDir project.file("../owncloud/docker_${dockerNumber}/java")
     }
 }
 

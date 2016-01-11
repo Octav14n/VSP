@@ -1,6 +1,7 @@
 package restopoly.games;
 
 import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.http.ContentType;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
+import restopoly.games.dataaccesslayer.entities.GameComponents;
 import restopoly.games.dataaccesslayer.entities.Player;
 
 import java.util.Date;
@@ -49,10 +51,12 @@ public class GamesControllerTest {
             .body("", Matchers.hasSize(0));
 
         Player player = new Player("simon", "Simon der Grune (um " + new Date().toString() + " Uhr)", "http://256.0.0.1/");
+        GameComponents components = new GameComponents("http://localhost:" + port + "/games", "", "http://localhost:5000/boards", "", "", "", "");
 
         // POST Games --> Object with game. // Creates a Game.
         String gameId =
-            given().when()
+            given().contentType(ContentType.JSON)
+                .body(components).when()
                 .post("/games").then()
                 .statusCode(HttpStatus.CREATED.value())
                 .body("players", Matchers.hasSize(0))

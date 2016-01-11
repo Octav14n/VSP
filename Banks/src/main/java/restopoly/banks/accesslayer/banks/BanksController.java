@@ -1,6 +1,7 @@
 package restopoly.banks.accesslayer.banks;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import restopoly.banks.accesslayer.exceptions.*;
@@ -25,7 +26,6 @@ public class BanksController {
     private BanksServiceBusinessLogic banksServiceBusinessLogic;
     @Autowired
     private ReplicationBusinessLogic replicationLogic;
-
 
     @RequestMapping(value = "/{gameid}", method = RequestMethod.GET)
     @ResponseStatus(HttpStatus.OK)

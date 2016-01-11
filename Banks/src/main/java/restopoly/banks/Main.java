@@ -8,6 +8,9 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import restopoly.banks.businesslogiclayer.ReplicationBusinessLogic;
 import restopoly.services.dataaccesslayer.entities.Service;
 import restopoly.services.Services;
@@ -20,6 +23,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @ComponentScan
 @EnableAutoConfiguration
 @EnableSwagger2
+//@RestController
 public class Main {
     @Autowired
     ReplicationBusinessLogic replication;
@@ -32,12 +36,19 @@ public class Main {
 
     @EventListener
     public void handleContextRefresh(ContextRefreshedEvent event) {
-        Services s = new Services(new Service("Bank service. Patrick & Simon.", "banks"), 13401);
-        s.register();
+        registerMe();
+    }
+
+    //@RequestMapping(value="/registerme", method = RequestMethod.GET)
+    public String registerMe() {
+        System.out.println("Ich werde jetzt die Registrierungen durchführen.");
+        Services s = new Services(new Service("Bank service. Patrick & Simon.", "bank"), port);
+        String out = s.register();
 
         if (4567 != port) {
             // Der 1. darf sich nicht bei sich selber registrieren.
             replication.registerMeAt("http://127.0.0.1:4567/banks/replication");
         }
+        return "Registrierungsprozess durchgefuehrt: " + out;
     }
 }
